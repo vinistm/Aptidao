@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste de Aptidão</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <form id="formulario">
+      <div id="texto">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" required /><br />
+      </div>
+
+      <div id="texto">
+        <label for="sexo">Sexo:</label>
+        <select id="sexo">
+          <option value="masculino">Masculino</option>
+          <option value="feminino">Feminino</option></select
+        ><br />
+      </div>
+      <div id="texto">
+        <label for="idade">Idade:</label>
+        <input type="number" id="idade" required /><br />
+      </div>
+
+      <div id="texto">
+        <label for="peso">Peso (kg):</label>
+        <input type="number" id="peso" required /><br />
+      </div>
+      <div id="texto">
+        <label for="altura">Altura (cm):</label>
+        <input type="number" id="altura" required /><br />
+      </div>
+      <div id="texto">
+        <label for="supino">Supino (kg):</label>
+        <input type="number" id="supino" required /><br />
+      </div>
+      <div id="texto">
+        <label for="saltoVertical">Salto Vertical (cm):</label>
+        <input type="number" id="saltoVertical" required /><br />
+      </div>
+      <div id="texto">
+        <label for="equilibrioD">Equilíbrio Perna Direita (segundos):</label>
+        <input type="number" id="equilibrioD" required /><br />
+      </div>
+      <div id="texto">
+        <label for="equilibrioE">Equilíbrio Perna Esquerda (segundos):</label>
+        <input type="number" id="equilibrioE" required /><br />
+      </div>
+      <div id="texto">
+        <label for="distanciaVO2">Distância VO2 (metros):</label>
+        <input type="number" id="distanciaVO2" required /><br />
+      </div>
+      <div id="texto">
+        <label for="flexibilidade">Flexibilidade (cm):</label>
+        <input type="number" id="flexibilidade" required /><br />
+      </div>
+      <div id="texto">
+        <label for="cintura">Cintura (cm):</label>
+        <input type="number" id="cintura" required /><br />
+      </div>
+      <div id="texto">
+        <label for="sentarLevantar">Sentar e Levantar (movimentos):</label>
+        <input type="number" id="sentarLevantar" required /><br />
+      </div>
+
+      <button type="button" onclick="gerarResultados()">Calcular</button>
+    </form>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="fechar-modal">&times;</span>
+        <div id="resultados"></div>
+        <button id="baixarPDF">Baixar PDF</button>
+      </div>
+    </div>
+  </body>
+</html>
