@@ -4,59 +4,76 @@ function calcularResultados(resultadosDiv) {
   var idade = parseFloat(document.getElementById("idade").value);
   var peso = parseFloat(document.getElementById("peso").value);
   var altura = parseFloat(document.getElementById("altura").value) / 100;
-
-  var imc = peso / (altura * altura);
-  var classificacaoIMC = classificarIMC(imc);
-
   var supino = parseFloat(document.getElementById("supino").value);
-  var resultadoSupino = calcularSupino(idade, peso, supino, sexo);
-
   var saltoVertical = parseFloat(
     document.getElementById("saltoVertical").value
   );
-  var classificacaoSalto = calcularSaltoVertical(idade, saltoVertical, sexo);
-
   var equilibrioD = parseFloat(document.getElementById("equilibrioD").value);
-  var classificacaoEquilibrioD = calcularEquilibrioD(equilibrioD);
-
   var equilibrioE = parseFloat(document.getElementById("equilibrioE").value);
-  var classificacaoEquilibrioE = calcularEquilibrioE(equilibrioE);
-
   var distanciaVO2 = parseFloat(document.getElementById("distanciaVO2").value);
-  var resultadoVO2 = calcularVO2Maximo(idade, distanciaVO2, sexo);
-
   var flexibilidade = parseFloat(
     document.getElementById("flexibilidade").value
   );
-  var classificacaoFlexibilidade = calcularFlexibilidade(sexo, flexibilidade);
-
   var cintura = parseFloat(document.getElementById("cintura").value);
-  var classificacaoCintura = calcularCinturaAbdominal(sexo, cintura);
-
   var sentarLevantar = parseFloat(
     document.getElementById("sentarLevantar").value
   );
-  var classificacaoSentarLevantar = calcularSentarLevantar(
-    idade,
-    sentarLevantar,
-    sexo
-  );
 
-  resultadosDiv.innerHTML = `
-      <h2>Resultados para ${nome}:</h2>
-      <p>IMC: ${imc.toFixed(2)} (${classificacaoIMC})</p>
-      <p>Circunferência Abdominal: ${cintura} cm (${classificacaoCintura})</p>
-      <p>Teste de Supino: ${resultadoSupino.percentual}% (${
-    resultadoSupino.classificacao
-  })</p>
-      <p>Teste de Sentar e Levantar: ${sentarLevantar} movimentos (${classificacaoSentarLevantar})</p>
-      <p>Teste de Salto Vertical: ${saltoVertical} cm (${classificacaoSalto})</p>
-      <p>Teste de Equilíbrio Perna Direita: ${equilibrioD} segundos (${classificacaoEquilibrioD})</p>
-      <p>Teste de Equilíbrio Perna Esquerda: ${equilibrioE} segundos (${classificacaoEquilibrioE})</p>
-      <p>Teste de Flexibilidade: ${flexibilidade} cm (${classificacaoFlexibilidade})</p>
-      <p>Teste de VO2 Máximo: ${resultadoVO2.vo2Max.toFixed(2)} mL/kg/min (${
-    resultadoVO2.classificacao
-  })</p>`;
+  var html = `<h2>Resultados para ${nome}:</h2>`;
+
+  if (!isNaN(peso) && !isNaN(altura)) {
+    var imc = peso / (altura * altura);
+    var classificacaoIMC = classificarIMC(imc);
+    html += `<p>IMC: ${imc.toFixed(2)} (${classificacaoIMC})</p>`;
+  }
+
+  if (!isNaN(cintura)) {
+    var classificacaoCintura = calcularCinturaAbdominal(sexo, cintura);
+    html += `<p>Circunferência Abdominal: ${cintura} cm (${classificacaoCintura})</p>`;
+  }
+
+  if (!isNaN(supino)) {
+    var resultadoSupino = calcularSupino(idade, peso, supino, sexo);
+    html += `<p>Teste de Supino: ${resultadoSupino.percentual}% (${resultadoSupino.classificacao})</p>`;
+  }
+
+  if (!isNaN(sentarLevantar)) {
+    var classificacaoSentarLevantar = calcularSentarLevantar(
+      idade,
+      sentarLevantar,
+      sexo
+    );
+    html += `<p>Teste de Sentar e Levantar: ${sentarLevantar} movimentos (${classificacaoSentarLevantar})</p>`;
+  }
+
+  if (!isNaN(saltoVertical)) {
+    var classificacaoSalto = calcularSaltoVertical(idade, saltoVertical, sexo);
+    html += `<p>Teste de Salto Vertical: ${saltoVertical} cm (${classificacaoSalto})</p>`;
+  }
+
+  if (!isNaN(equilibrioD)) {
+    var classificacaoEquilibrioD = calcularEquilibrioD(equilibrioD);
+    html += `<p>Teste de Equilíbrio Perna Direita: ${equilibrioD} segundos (${classificacaoEquilibrioD})</p>`;
+  }
+
+  if (!isNaN(equilibrioE)) {
+    var classificacaoEquilibrioE = calcularEquilibrioE(equilibrioE);
+    html += `<p>Teste de Equilíbrio Perna Esquerda: ${equilibrioE} segundos (${classificacaoEquilibrioE})</p>`;
+  }
+
+  if (!isNaN(flexibilidade)) {
+    var classificacaoFlexibilidade = calcularFlexibilidade(sexo, flexibilidade);
+    html += `<p>Teste de Flexibilidade: ${flexibilidade} cm (${classificacaoFlexibilidade})</p>`;
+  }
+
+  if (!isNaN(distanciaVO2)) {
+    var resultadoVO2 = calcularVO2Maximo(idade, distanciaVO2, sexo);
+    html += `<p>Teste de VO2 Máximo: ${resultadoVO2.vo2Max.toFixed(
+      2
+    )} mL/kg/min (${resultadoVO2.classificacao})</p>`;
+  }
+
+  resultadosDiv.innerHTML = html;
 }
 
 function classificarIMC(imc) {
