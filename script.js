@@ -469,14 +469,30 @@ function gerarResultados() {
 
   document.getElementById("baixarPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;
-    html2canvas(document.getElementById("resultados"))
+
+    html2canvas(document.getElementById("resultados"), {
+      scale: 3, // Aumenta a escala para melhorar a qualidade
+      useCORS: true, // Permite uso de imagens externas
+    })
       .then(function (canvas) {
         const pdf = new jsPDF();
-        const imgData = canvas.toDataURL("image/png");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, pageHeight);
-        pdf.save("resultados.pdf");
+        const logo = new Image();
+        logo.src = "logo.jpeg";
+
+        logo.onload = function () {
+          const logoWidth = 50;
+          const logoHeight = (logo.height / logo.width) * logoWidth;
+          pdf.addImage(logo, "JPEG", 15, 15, logoWidth, logoHeight);
+
+          const imgData = canvas.toDataURL("image/png");
+          const imgWidth = 190;
+          const imgHeight = (canvas.height / canvas.width) * imgWidth;
+          const marginTop = logoHeight + 10;
+
+          pdf.addImage(imgData, "PNG", 10, marginTop, imgWidth, imgHeight);
+
+          pdf.save("resultados.pdf");
+        };
       })
       .catch(function (error) {
         console.error("Erro ao gerar o PDF:", error);
