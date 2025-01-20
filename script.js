@@ -658,15 +658,10 @@ function gerarResultados() {
           const imgData = pageCanvas.toDataURL("image/png");
 
           // Ajuste da posição Y para margens
-          const yPosition = page === 0 ? margin * 3 : margin * 5; // Margem maior na segunda página
-
+          const yPosition = page === 0 ? margin * 3 : margin * 2; // Margem maior na segunda página
+          pdf.text("", margin, margin * 2);
           pdf.addImage(
-            imgData,
-            "PNG",
-            margin,
-            yPosition,
-            imgWidth,
-            contentHeight
+            imgData, "PNG", margin, margin * 3, imgWidth, contentHeight
           );
           yOffset += scaledContentHeight; // Incrementar o deslocamento corretamente
         }
