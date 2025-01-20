@@ -469,7 +469,7 @@ function gerarResultados() {
 
   document.getElementById("baixarPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;
-    const scale = window.innerWidth > 768 ? 2 : 3; // Escala ajustada para desktop e mobile
+    const scale = window.innerWidth > 768 ? 2 : 3; // Ajusta a escala dinamicamente
     html2canvas(document.getElementById("resultados"), { scale }).then(
       function (canvas) {
         const pdf = new jsPDF();
@@ -493,9 +493,9 @@ function gerarResultados() {
 
           while (remainingHeight > 0) {
             if (yPosition === margin) {
-              // Adicionar logo na primeira página ou em cada nova página
+              // Adiciona logo na primeira página
               pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
-              yPosition = logoHeight + margin * 2; // Atualizar posição inicial para conteúdo
+              yPosition = logoHeight + margin * 2; // Ajusta posição para o conteúdo
             }
 
             const heightToDraw = Math.min(
@@ -511,14 +511,22 @@ function gerarResultados() {
               imgWidth,
               heightToDraw,
               0,
-              canvas.height - remainingHeight // Posição da imagem para recortar
+              canvas.height - remainingHeight // Posição do canvas para corte
+            );
+
+            // Adiciona texto padrão para manter o tamanho da fonte consistente
+            pdf.setFontSize(12); // Define o tamanho da fonte
+            pdf.text(
+              "Página " + pdf.internal.getNumberOfPages(),
+              pageWidth - margin - 20,
+              pageHeight - margin
             );
 
             remainingHeight -= heightToDraw;
 
             if (remainingHeight > 0) {
               pdf.addPage();
-              yPosition = margin; // Resetar posição inicial para novas páginas
+              yPosition = margin; // Reseta a posição inicial
             }
           }
 
