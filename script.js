@@ -476,19 +476,21 @@ function gerarResultados() {
     const contentHeight = pageHeight - margin * 2;
 
     html2canvas(document.getElementById("resultados")).then(function (canvas) {
-      const imgWidth = pageWidth - margin * 2; // Ajustar largura
-      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Ajustar altura proporcional
-
       const totalHeight = canvas.height;
-      const totalPages = Math.ceil(totalHeight / contentHeight); // Calcular páginas necessárias
+      const imgWidth = pageWidth - margin * 2; // Ajuste de largura
+      const scale = imgWidth / canvas.width;
+      const imgHeight = canvas.height * scale;
+      const totalPages = Math.ceil(totalHeight / contentHeight);
 
       const logo = new Image();
       logo.src = "logo.jpeg";
 
       logo.onload = function () {
+        let yOffset = 0; // Controle do deslocamento da altura
+
         for (let page = 0; page < totalPages; page++) {
           if (page > 0) {
-            pdf.addPage(); // Adicionar nova página, exceto na primeira
+            pdf.addPage();
           }
 
           // Adicionar logo apenas na primeira página
@@ -498,29 +500,28 @@ function gerarResultados() {
             pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
           }
 
-          const yPosition = page === 0 ? margin * 3 : margin; // Ajustar para logo na primeira página
-          const yOffset = page * contentHeight; // Deslocamento de altura fixo
-
-          // Garantir que o corte do canvas seja preciso e constante
           const pageCanvas = document.createElement("canvas");
           const context = pageCanvas.getContext("2d");
           pageCanvas.width = canvas.width;
-          pageCanvas.height = contentHeight * (canvas.width / pageWidth);
+          pageCanvas.height = contentHeight / scale;
 
           context.drawImage(
             canvas,
             0,
             yOffset,
             canvas.width,
-            contentHeight * (canvas.width / pageWidth),
+            pageCanvas.height,
             0,
             0,
             canvas.width,
-            contentHeight * (canvas.width / pageWidth)
+            pageCanvas.height
           );
 
           const imgData = pageCanvas.toDataURL("image/png");
+          const yPosition = page === 0 ? margin * 3 : margin; // Ajustar margem inicial
+
           pdf.addImage(imgData, "PNG", margin, yPosition, imgWidth, imgHeight);
+          yOffset += pageCanvas.height; // Incrementar o deslocamento corretamente
         }
 
         pdf.save("resultados.pdf");
