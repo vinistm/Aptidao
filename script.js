@@ -11,16 +11,13 @@ function calcularResultados(resultadosDiv) {
   var equilibrioD = parseFloat(document.getElementById("equilibrioD").value);
   var equilibrioE = parseFloat(document.getElementById("equilibrioE").value);
   var distanciaVO2 = parseFloat(document.getElementById("distanciaVO2").value);
-  var flexibilidade = parseFloat(
-    document.getElementById("flexibilidade").value
-  );
+  var flexibilidade = parseFloat(document.getElementById("flexibilidade").value);
   var cintura = parseFloat(document.getElementById("cintura").value);
-  var sentarLevantar = parseFloat(
-    document.getElementById("sentarLevantar").value
-  );
+  var sentarLevantar = parseFloat(document.getElementById("sentarLevantar").value);
   var flexaoCotovelo = parseFloat(document.getElementById("flexaoCotovelo").value);
   var levantarContornar = parseFloat(document.getElementById("levantarContornar").value);
   var caminhada6Minutos = parseFloat(document.getElementById("caminhada6Minutos").value);
+
   var html = `<h2>Resultados para ${nome}:</h2>`;
 
   if (!isNaN(peso) && !isNaN(altura)) {
@@ -631,13 +628,12 @@ function gerarResultados() {
             pdf.addPage();
           }
 
-          // Adicionar logo apenas na primeira página
           if (page === 0) {
-            const logoWidth = 50;
+            const logoWidth = 30;
             const logoHeight = (logo.height / logo.width) * logoWidth;
             pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
           }
-
+          const scaledContentHeight = (contentHeight - 110) / scale; 
           const pageCanvas = document.createElement("canvas");
           const context = pageCanvas.getContext("2d");
           pageCanvas.width = canvas.width;
@@ -658,12 +654,12 @@ function gerarResultados() {
           const imgData = pageCanvas.toDataURL("image/png");
 
           // Ajuste da posição Y para margens
-          const yPosition = page === 0 ? margin * 3 : margin * 2; // Margem maior na segunda página
+          const yPosition = page === 0 ? margin * 3 : margin * 2; 
           pdf.text("", margin, margin * 2);
           pdf.addImage(
             imgData, "PNG", margin, margin * 3, imgWidth, contentHeight
           );
-          yOffset += scaledContentHeight; // Incrementar o deslocamento corretamente
+          yOffset += scaledContentHeight; 
         }
 
         pdf.save("resultados.pdf");
