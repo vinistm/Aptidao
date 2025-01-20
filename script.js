@@ -469,60 +469,63 @@ function gerarResultados() {
 
   document.getElementById("baixarPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;
-    html2canvas(document.getElementById("resultados")).then(function (canvas) {
-      const pdf = new jsPDF();
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 10;
+    const scale = window.innerWidth > 768 ? 2 : 3; // Escala ajustada para desktop e mobile
+    html2canvas(document.getElementById("resultados"), { scale }).then(
+      function (canvas) {
+        const pdf = new jsPDF();
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 10;
 
-      const logo = new Image();
-      logo.src = "logo.jpeg";
+        const logo = new Image();
+        logo.src = "logo.jpeg";
 
-      logo.onload = function () {
-        const logoWidth = 50;
-        const logoHeight = (logo.height / logo.width) * logoWidth;
+        logo.onload = function () {
+          const logoWidth = 50;
+          const logoHeight = (logo.height / logo.width) * logoWidth;
 
-        const imgData = canvas.toDataURL("image/png");
-        const imgWidth = pageWidth - margin * 2;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const imgData = canvas.toDataURL("image/png");
+          const imgWidth = pageWidth - margin * 2;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        let yPosition = margin; // Posição inicial
-        let remainingHeight = imgHeight;
+          let yPosition = margin; // Posição inicial
+          let remainingHeight = imgHeight;
 
-        while (remainingHeight > 0) {
-          if (yPosition === margin) {
-            // Adicionar logo na primeira página ou em cada nova página
-            pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
-            yPosition = logoHeight + margin * 2; // Atualizar posição inicial para conteúdo
+          while (remainingHeight > 0) {
+            if (yPosition === margin) {
+              // Adicionar logo na primeira página ou em cada nova página
+              pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
+              yPosition = logoHeight + margin * 2; // Atualizar posição inicial para conteúdo
+            }
+
+            const heightToDraw = Math.min(
+              pageHeight - yPosition - margin,
+              remainingHeight
+            );
+
+            pdf.addImage(
+              imgData,
+              "PNG",
+              margin,
+              yPosition,
+              imgWidth,
+              heightToDraw,
+              0,
+              canvas.height - remainingHeight // Posição da imagem para recortar
+            );
+
+            remainingHeight -= heightToDraw;
+
+            if (remainingHeight > 0) {
+              pdf.addPage();
+              yPosition = margin; // Resetar posição inicial para novas páginas
+            }
           }
 
-          const heightToDraw = Math.min(
-            pageHeight - yPosition - margin,
-            remainingHeight
-          );
-
-          pdf.addImage(
-            imgData,
-            "PNG",
-            margin,
-            yPosition,
-            imgWidth,
-            heightToDraw,
-            0,
-            canvas.height - remainingHeight // Posição da imagem para recortar
-          );
-
-          remainingHeight -= heightToDraw;
-
-          if (remainingHeight > 0) {
-            pdf.addPage();
-            yPosition = margin; // Resetar posição inicial para novas páginas
-          }
-        }
-
-        pdf.save("resultados.pdf");
-      };
-    });
+          pdf.save("resultados.pdf");
+        };
+      }
+    );
   });
 
   var fecharModal = document.getElementsByClassName("fechar-modal")[0];
