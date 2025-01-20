@@ -73,6 +73,20 @@ function calcularResultados(resultadosDiv) {
     )} mL/kg/min (${resultadoVO2.classificacao})</p>`;
   }
 
+  if (!isNaN(flexaoCotovelo)) {
+    var classificacaoFlexaoCotovelo = calcularFlexaoCotovelo(idade, flexaoCotovelo, sexo);
+    html += `<p>Teste de Flexão de Cotovelo: ${flexaoCotovelo} repetições (${classificacaoFlexaoCotovelo})</p>`;
+  }
+  if (!isNaN(levantarContornar)) {
+    var classificacaoLevantarContornar = calcularLevantarContornar(idade, levantarContornar, sexo);
+    html += `<p>Teste Levantar da Cadeira e Contornar o Cone: ${levantarContornar} segundos (${classificacaoLevantarContornar})</p>`;
+  }
+  
+  if (!isNaN(caminhada6Minutos)) {
+    var classificacaoCaminhada6Minutos = calcularCaminhada6Minutos(idade, caminhada6Minutos, sexo);
+    html += `<p>Teste de Caminhada de 6 Minutos: ${caminhada6Minutos} metros (${classificacaoCaminhada6Minutos})</p>`;
+  }
+
   resultadosDiv.innerHTML = html;
 }
 
@@ -325,15 +339,17 @@ function calcularSentarLevantar(idade, movimentos, sexo) {
   return classificacao;
 }
 
-function classificarPorFaixa(valor, excelente, bom, medio) {
+function classificarPorFaixa(valor, excelente, bom, medio, ruim) {
   if (valor > excelente) {
     return "Excelente";
   } else if (valor >= bom && valor <= excelente) {
     return "Bom";
   } else if (valor >= medio && valor < bom) {
     return "Médio";
-  } else {
+  } else if (valor >= ruim && valor < medio) {
     return "Ruim";
+  } else {
+    return "Muito Ruim";
   }
 }
 function calcularEquilibrioD(tempo) {
@@ -457,7 +473,126 @@ function calcularCinturaAbdominal(sexo, cintura) {
 
   return classificacao;
 }
+function calcularFlexaoCotovelo(idade, repeticoes, sexo) {
+  var classificacao = "";
 
+  if (sexo === "masculino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorFaixa(repeticoes, 27, 23, 17, 13);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorFaixa(repeticoes, 26, 22, 16, 12);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorFaixa(repeticoes, 25, 21, 15, 11);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorFaixa(repeticoes, 24, 19, 14, 10);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorFaixa(repeticoes, 22, 18, 13, 9);
+    } else { // 71+
+      classificacao = classificarPorFaixa(repeticoes, 21, 17, 12, 8);
+    }
+  } else if (sexo === "feminino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorFaixa(repeticoes, 24, 20, 14, 10);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorFaixa(repeticoes, 23, 19, 13, 9);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorFaixa(repeticoes, 22, 18, 12, 8);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorFaixa(repeticoes, 21, 17, 11, 7);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorFaixa(repeticoes, 19, 15, 10, 6);
+    } else { // 71+
+      classificacao = classificarPorFaixa(repeticoes, 18, 14, 9, 5);
+    }
+  }
+
+  return classificacao;
+}
+function calcularLevantarContornar(idade, tempo, sexo) {
+  var classificacao = "";
+
+  if (sexo === "masculino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarTempo(tempo, 6, 7, 8, 9);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarTempo(tempo, 7, 8, 9, 10);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarTempo(tempo, 8, 9, 10, 11);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarTempo(tempo, 9, 10, 11, 12);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarTempo(tempo, 10, 11, 12, 13);
+    } else { // 71+
+      classificacao = classificarTempo(tempo, 11, 12, 13, 14);
+    }
+  } else if (sexo === "feminino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarTempo(tempo, 7, 8, 9, 10);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarTempo(tempo, 8, 9, 10, 11);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarTempo(tempo, 9, 10, 11, 12);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarTempo(tempo, 10, 11, 12, 13);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarTempo(tempo, 11, 12, 13, 14);
+    } else { // 71+
+      classificacao = classificarTempo(tempo, 12, 13, 14, 15);
+    }
+  }
+
+  return classificacao;
+}
+
+function classificarTempo(valor, excelente, bom, medio, ruim) {
+  if (valor < excelente) {
+    return "Excelente";
+  } else if (valor >= excelente && valor < bom) {
+    return "Bom";
+  } else if (valor >= bom && valor < medio) {
+    return "Médio";
+  } else if (valor >= medio && valor < ruim) {
+    return "Ruim";
+  } else {
+    return "Muito Ruim";
+  }
+}
+
+function calcularCaminhada6Minutos(idade, distancia, sexo) {
+  var classificacao = "";
+
+  if (sexo === "masculino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorFaixa(distancia, 650, 601, 551, 500);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorFaixa(distancia, 640, 591, 541, 490);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorFaixa(distancia, 630, 581, 531, 480);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorFaixa(distancia, 620, 571, 521, 470);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorFaixa(distancia, 600, 551, 501, 450);
+    } else { // 71+
+      classificacao = classificarPorFaixa(distancia, 580, 531, 481, 430);
+    }
+  } else if (sexo === "feminino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorFaixa(distancia, 630, 581, 531, 480);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorFaixa(distancia, 620, 571, 521, 470);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorFaixa(distancia, 610, 561, 511, 460);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorFaixa(distancia, 600, 551, 501, 450);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorFaixa(distancia, 580, 531, 481, 430);
+    } else { // 71+
+      classificacao = classificarPorFaixa(distancia, 560, 511, 461, 410);
+    }
+  }
+
+  return classificacao;
+}
 function gerarResultados() {
   var resultadosDiv = document.createElement("div");
   calcularResultados(resultadosDiv);
