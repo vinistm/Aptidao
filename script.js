@@ -18,7 +18,9 @@ function calcularResultados(resultadosDiv) {
   var sentarLevantar = parseFloat(
     document.getElementById("sentarLevantar").value
   );
-
+  var flexaoCotovelo = parseFloat(document.getElementById("flexaoCotovelo").value);
+  var levantarContornar = parseFloat(document.getElementById("levantarContornar").value);
+  var caminhada6Minutos = parseFloat(document.getElementById("caminhada6Minutos").value);
   var html = `<h2>Resultados para ${nome}:</h2>`;
 
   if (!isNaN(peso) && !isNaN(altura)) {
@@ -656,7 +658,7 @@ function gerarResultados() {
           const imgData = pageCanvas.toDataURL("image/png");
 
           // Ajuste da posição Y para margens
-          const yPosition = page === 0 ? margin * 4 : margin * 3; // Margem maior na segunda página
+          const yPosition = page === 0 ? margin * 3 : margin * 4; // Margem maior na segunda página
 
           pdf.addImage(
             imgData,
