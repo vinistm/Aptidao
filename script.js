@@ -471,59 +471,52 @@ function gerarResultados() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
     const margin = 10;
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const contentHeight = pageHeight - margin * 2;
+    const pageWidth = pdf.internal.pageSize.getWidth() - margin * 2;
+    const pageHeight = pdf.internal.pageSize.getHeight() - margin * 2;
 
     html2canvas(document.getElementById("resultados")).then(function (canvas) {
-      const totalHeight = canvas.height;
-      const headerHeight = 20; // Adjust this value as needed
-      const footerHeight = 20; // Adjust this value as needed
-      const contentHeight = totalHeight - headerHeight - footerHeight;
-      const imgWidth = pageWidth - margin * 2;
-      const scale = imgWidth / canvas.width;
-      const imgHeight = canvas.height * scale;
-      const totalPages = Math.ceil(contentHeight / contentHeight);
+      const imgData = canvas.toDataURL("image/png");
+      let heightLeft = canvas.height; // Altura restante para imprimir
+      let position = 0; // Posição vertical atual na página
 
+      // Carrega a logo
       const logo = new Image();
-      logo.src = "logo.jpeg";
+      logo.src = "logo.jpeg"; // Substitua pelo caminho da sua logo
 
       logo.onload = function () {
-        let yOffset = 0; // Controle do deslocamento da altura
+        const logoWidth = 50; // Largura em pontos
+        const logoHeight = (logo.height / logo.width) * logoWidth; // Mantém a proporção
 
-        for (let page = 0; page < totalPages; page++) {
-          if (page > 0) {
+        // Enquanto houver conteúdo para imprimir
+        while (heightLeft > 0) {
+          // Adiciona uma nova página (exceto na primeira)
+          if (position > 0) {
             pdf.addPage();
-          } // Adicionar logo apenas na primeira página
+          }
 
-          if (page === 0) {
-            const logoWidth = 50;
-            const logoHeight = (logo.height / logo.width) * logoWidth;
+          // Adiciona a logo na primeira página
+          if (position === 0) {
             pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
           }
 
-          const pageCanvas = document.createElement("canvas");
-          const context = pageCanvas.getContext("2d");
-          pageCanvas.width = canvas.width;
-          pageCanvas.height = contentHeight / scale;
+          // Calcula a altura da imagem a ser impressa na página atual
+          const imgHeight = Math.min(heightLeft, pageHeight);
 
-          context.drawImage(
-            canvas,
-            0,
-            yOffset,
-            canvas.width,
-            pageCanvas.height,
-            0,
-            0,
-            canvas.width,
-            pageCanvas.height
+          // Adiciona a imagem ao PDF
+          pdf.addImage(
+            imgData,
+            "PNG",
+            margin,
+            margin + position,
+            pageWidth,
+            imgHeight,
+            null,
+            "FAST"
           );
 
-          const imgData = pageCanvas.toDataURL("image/png");
-          const yPosition = page === 0 ? margin * 3 : margin + 45; // Ajuste de margem superior
-
-          pdf.addImage(imgData, "PNG", margin, yPosition, imgWidth, imgHeight);
-          yOffset += pageCanvas.height; // Incrementar o deslocamento corretamente
+          // Atualiza a altura restante e a posição vertical
+          heightLeft -= pageHeight;
+          position += pageHeight;
         }
 
         pdf.save("resultados.pdf");
