@@ -622,6 +622,7 @@ function gerarResultados() {
 
       logo.onload = function () {
         let yOffset = 0;
+        const totalPages = 3;
 
         for (let page = 0; page < totalPages; page++) {
           if (page > 0) {
@@ -629,7 +630,7 @@ function gerarResultados() {
           }
 
           if (page === 0) {
-            const logoWidth = 30;
+            const logoWidth = 25;
             const logoHeight = (logo.height / logo.width) * logoWidth;
             pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
           }
@@ -653,11 +654,10 @@ function gerarResultados() {
 
           const imgData = pageCanvas.toDataURL("image/png");
 
-          // Ajuste da posição Y para margens
           const yPosition = page === 0 ? margin * 3 : margin * 2; 
           pdf.text("", margin, margin * 2);
           pdf.addImage(
-            imgData, "PNG", margin, margin * 3, imgWidth, contentHeight
+            imgData, "PNG", margin, yPosition, imgWidth, contentHeight
           );
           yOffset += scaledContentHeight; 
         }
