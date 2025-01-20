@@ -477,10 +477,13 @@ function gerarResultados() {
 
     html2canvas(document.getElementById("resultados")).then(function (canvas) {
       const totalHeight = canvas.height;
+      const headerHeight = 20; // Adjust this value as needed
+      const footerHeight = 20; // Adjust this value as needed
+      const contentHeight = totalHeight - headerHeight - footerHeight;
       const imgWidth = pageWidth - margin * 2;
       const scale = imgWidth / canvas.width;
       const imgHeight = canvas.height * scale;
-      const totalPages = Math.ceil(totalHeight / contentHeight);
+      const totalPages = Math.ceil(contentHeight / contentHeight);
 
       const logo = new Image();
       logo.src = "logo.jpeg";
@@ -491,9 +494,8 @@ function gerarResultados() {
         for (let page = 0; page < totalPages; page++) {
           if (page > 0) {
             pdf.addPage();
-          }
+          } // Adicionar logo apenas na primeira página
 
-          // Adicionar logo apenas na primeira página
           if (page === 0) {
             const logoWidth = 50;
             const logoHeight = (logo.height / logo.width) * logoWidth;
@@ -518,7 +520,7 @@ function gerarResultados() {
           );
 
           const imgData = pageCanvas.toDataURL("image/png");
-          const yPosition = page === 0 ? margin * 3 : margin + 15; // Ajuste de margem superior
+          const yPosition = page === 0 ? margin * 3 : margin + 45; // Ajuste de margem superior
 
           pdf.addImage(imgData, "PNG", margin, yPosition, imgWidth, imgHeight);
           yOffset += pageCanvas.height; // Incrementar o deslocamento corretamente
