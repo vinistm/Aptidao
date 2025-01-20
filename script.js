@@ -470,16 +470,16 @@ function gerarResultados() {
   document.getElementById("baixarPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
+    const margin = 10;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const contentHeight = pageHeight - margin * 2;
 
     html2canvas(document.getElementById("resultados")).then(function (canvas) {
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 10;
+      const imgWidth = pageWidth - margin * 2; // Ajustar largura
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Ajustar altura proporcional
 
-      const imgWidth = pageWidth - margin * 2; // Largura ajustada
-      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Altura proporcional
-
-      const totalPages = Math.ceil(imgHeight / (pageHeight - margin * 2)); // Quantidade de páginas necessárias
+      const totalPages = Math.ceil(canvas.height / contentHeight); // Calcular páginas necessárias
 
       const logo = new Image();
       logo.src = "logo.jpeg";
@@ -487,28 +487,45 @@ function gerarResultados() {
       logo.onload = function () {
         for (let page = 0; page < totalPages; page++) {
           if (page > 0) {
-            pdf.addPage(); // Adiciona nova página, exceto na primeira
+            pdf.addPage(); // Adicionar nova página, exceto na primeira
           }
 
-          // Adiciona o logo na primeira página
+          // Adicionar logo apenas na primeira página
           if (page === 0) {
             const logoWidth = 50;
             const logoHeight = (logo.height / logo.width) * logoWidth;
             pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
           }
 
-          const yPosition = page === 0 ? margin * 3 : margin; // Ajusta posição inicial com base no logo
-          const yOffset = page * (pageHeight - margin * 2);
+          const yPosition = page === 0 ? margin * 3 : margin; // Ajustar para logo na primeira página
+          const yOffset = page * contentHeight; // Deslocamento de altura
 
+          // Cortar o canvas dinamicamente para cada página
+          const pageCanvas = document.createElement("canvas");
+          const context = pageCanvas.getContext("2d");
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = contentHeight * (canvas.width / pageWidth);
+
+          context.drawImage(
+            canvas,
+            0,
+            yOffset,
+            canvas.width,
+            contentHeight * (canvas.width / pageWidth),
+            0,
+            0,
+            canvas.width,
+            contentHeight * (canvas.width / pageWidth)
+          );
+
+          const imgData = pageCanvas.toDataURL("image/png");
           pdf.addImage(
-            canvas.toDataURL("image/png"),
+            imgData,
             "PNG",
             margin,
             yPosition,
             imgWidth,
-            imgHeight,
-            0,
-            yOffset
+            contentHeight
           );
         }
 
