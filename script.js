@@ -469,71 +469,62 @@ function gerarResultados() {
 
   document.getElementById("baixarPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;
-    const scale = window.innerWidth > 768 ? 2 : 3; // Ajusta a escala dinamicamente
-    html2canvas(document.getElementById("resultados"), { scale }).then(
-      function (canvas) {
-        const pdf = new jsPDF();
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const margin = 10;
 
-        const logo = new Image();
-        logo.src = "logo.jpeg";
+    html2canvas(document.getElementById("resultados")).then(function (canvas) {
+      const pdf = new jsPDF();
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
 
-        logo.onload = function () {
-          const logoWidth = 50;
-          const logoHeight = (logo.height / logo.width) * logoWidth;
+      const logo = new Image();
+      logo.src = "logo.jpeg";
 
-          const imgData = canvas.toDataURL("image/png");
-          const imgWidth = pageWidth - margin * 2;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      logo.onload = function () {
+        const logoWidth = 50;
+        const logoHeight = (logo.height / logo.width) * logoWidth;
 
-          let yPosition = margin; // Posição inicial
-          let remainingHeight = imgHeight;
+        const imgWidth = pageWidth - margin * 2; // Ajusta a largura da imagem
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Mantém proporção da imagem
 
-          while (remainingHeight > 0) {
-            if (yPosition === margin) {
-              // Adiciona logo na primeira página
-              pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
-              yPosition = logoHeight + margin * 2; // Ajusta posição para o conteúdo
-            }
+        let yPosition = margin; // Posição inicial
+        let remainingHeight = canvas.height;
 
-            const heightToDraw = Math.min(
-              pageHeight - yPosition - margin,
-              remainingHeight
-            );
+        const imgData = canvas.toDataURL("image/png");
 
-            pdf.addImage(
-              imgData,
-              "PNG",
-              margin,
-              yPosition,
-              imgWidth,
-              heightToDraw,
-              0,
-              canvas.height - remainingHeight // Posição do canvas para corte
-            );
-
-            // Adiciona texto padrão para manter o tamanho da fonte consistente
-            pdf.setFontSize(12); // Define o tamanho da fonte
-            pdf.text(
-              "Página " + pdf.internal.getNumberOfPages(),
-              pageWidth - margin - 20,
-              pageHeight - margin
-            );
-
-            remainingHeight -= heightToDraw;
-
-            if (remainingHeight > 0) {
-              pdf.addPage();
-              yPosition = margin; // Reseta a posição inicial
-            }
+        while (remainingHeight > 0) {
+          // Adiciona logo somente na primeira página
+          if (pdf.internal.getNumberOfPages() === 1) {
+            pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
+            yPosition = logoHeight + margin * 2;
           }
 
-          pdf.save("resultados.pdf");
-        };
-      }
-    );
+          const heightToDraw = Math.min(
+            pageHeight - yPosition - margin,
+            remainingHeight
+          );
+
+          pdf.addImage(
+            imgData,
+            "PNG",
+            margin,
+            yPosition,
+            imgWidth,
+            (heightToDraw / canvas.height) * imgWidth,
+            0,
+            canvas.height - remainingHeight // Ajusta o corte na origem da imagem
+          );
+
+          remainingHeight -= heightToDraw;
+
+          if (remainingHeight > 0) {
+            pdf.addPage();
+            yPosition = margin; // Reinicia para a próxima página
+          }
+        }
+
+        pdf.save("resultados.pdf");
+      };
+    });
   });
 
   var fecharModal = document.getElementsByClassName("fechar-modal")[0];
