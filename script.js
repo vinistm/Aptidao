@@ -477,7 +477,7 @@ function gerarResultados() {
 
     html2canvas(document.getElementById("resultados")).then(function (canvas) {
       const totalHeight = canvas.height;
-      const imgWidth = pageWidth - margin * 2; // Ajuste de largura
+      const imgWidth = pageWidth - margin * 2;
       const scale = imgWidth / canvas.width;
       const imgHeight = canvas.height * scale;
       const totalPages = Math.ceil(totalHeight / contentHeight);
@@ -518,7 +518,7 @@ function gerarResultados() {
           );
 
           const imgData = pageCanvas.toDataURL("image/png");
-          const yPosition = page === 0 ? margin * 3 : margin; // Ajustar margem inicial
+          const yPosition = page === 0 ? margin * 3 : margin + 15; // Ajuste de margem superior
 
           pdf.addImage(imgData, "PNG", margin, yPosition, imgWidth, imgHeight);
           yOffset += pageCanvas.height; // Incrementar o deslocamento corretamente
