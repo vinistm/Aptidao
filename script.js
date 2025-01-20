@@ -656,7 +656,7 @@ function gerarResultados() {
           const imgData = pageCanvas.toDataURL("image/png");
 
           // Ajuste da posição Y para margens
-          const yPosition = page === 0 ? margin * 3 : margin * 2; // Margem maior na segunda página
+          const yPosition = page === 0 ? margin * 4 : margin * 3; // Margem maior na segunda página
 
           pdf.addImage(
             imgData,
