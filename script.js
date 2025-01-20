@@ -479,7 +479,8 @@ function gerarResultados() {
       const imgWidth = pageWidth - margin * 2; // Ajustar largura
       const imgHeight = (canvas.height * imgWidth) / canvas.width; // Ajustar altura proporcional
 
-      const totalPages = Math.ceil(canvas.height / contentHeight); // Calcular páginas necessárias
+      const totalHeight = canvas.height;
+      const totalPages = Math.ceil(totalHeight / contentHeight); // Calcular páginas necessárias
 
       const logo = new Image();
       logo.src = "logo.jpeg";
@@ -498,9 +499,9 @@ function gerarResultados() {
           }
 
           const yPosition = page === 0 ? margin * 3 : margin; // Ajustar para logo na primeira página
-          const yOffset = page * contentHeight; // Deslocamento de altura
+          const yOffset = page * contentHeight; // Deslocamento de altura fixo
 
-          // Cortar o canvas dinamicamente para cada página
+          // Garantir que o corte do canvas seja preciso e constante
           const pageCanvas = document.createElement("canvas");
           const context = pageCanvas.getContext("2d");
           pageCanvas.width = canvas.width;
@@ -519,14 +520,7 @@ function gerarResultados() {
           );
 
           const imgData = pageCanvas.toDataURL("image/png");
-          pdf.addImage(
-            imgData,
-            "PNG",
-            margin,
-            yPosition,
-            imgWidth,
-            contentHeight
-          );
+          pdf.addImage(imgData, "PNG", margin, yPosition, imgWidth, imgHeight);
         }
 
         pdf.save("resultados.pdf");
