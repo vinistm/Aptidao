@@ -469,27 +469,53 @@ function gerarResultados() {
 
   document.getElementById("baixarPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;
-
-    html2canvas(document.getElementById("resultados"), {
-      scale: 3, // Aumenta a escala para melhorar a qualidade
-      useCORS: true, // Permite uso de imagens externas
-    })
+    html2canvas(document.getElementById("resultados"))
       .then(function (canvas) {
         const pdf = new jsPDF();
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 10;
+
+        // Adicionar logo
         const logo = new Image();
         logo.src = "logo.jpeg";
-
         logo.onload = function () {
           const logoWidth = 50;
           const logoHeight = (logo.height / logo.width) * logoWidth;
-          pdf.addImage(logo, "JPEG", 15, 15, logoWidth, logoHeight);
+          pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
 
+          // Adicionar conteúdo paginado
           const imgData = canvas.toDataURL("image/png");
-          const imgWidth = 190;
-          const imgHeight = (canvas.height / canvas.width) * imgWidth;
-          const marginTop = logoHeight + 10;
+          const imgWidth = pageWidth - margin * 2;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-          pdf.addImage(imgData, "PNG", 10, marginTop, imgWidth, imgHeight);
+          let yPosition = logoHeight + margin * 2; // Começar abaixo do logo
+          let remainingHeight = imgHeight;
+
+          while (remainingHeight > 0) {
+            const heightToDraw = Math.min(
+              pageHeight - yPosition - margin,
+              remainingHeight
+            );
+
+            pdf.addImage(
+              imgData,
+              "PNG",
+              margin,
+              yPosition,
+              imgWidth,
+              heightToDraw,
+              0,
+              canvas.height - remainingHeight // Posição da imagem para recortar
+            );
+
+            remainingHeight -= heightToDraw;
+
+            if (remainingHeight > 0) {
+              pdf.addPage();
+              yPosition = margin; // Resetar posição para nova página
+            }
+          }
 
           pdf.save("resultados.pdf");
         };
