@@ -34,6 +34,11 @@ function calcularResultados(resultadosDiv) {
     var resultadoSupino = calcularSupino(idade, peso, supino, sexo);
     html += `<p>Teste de Supino: ${resultadoSupino.percentual}% (${resultadoSupino.classificacao})</p>`;
   }
+    if (!isNaN(agachamento)) {
+    var resultadoAgachamento = calcularAgachamento(idade, peso, agachamento, sexo);
+    html += `<p>Teste de Agachamento: ${resultadoAgachamento.percentual}% (${resultadoAgachamento.classificacao})</p>`;
+  }
+
 
   if (!isNaN(sentarLevantar)) {
     var classificacaoSentarLevantar = calcularSentarLevantar(
@@ -85,10 +90,6 @@ function calcularResultados(resultadosDiv) {
     html += `<p>Teste de Caminhada de 6 Minutos: ${caminhada6Minutos} metros (${classificacaoCaminhada6Minutos})</p>`;
   }
 
-  if (!isNaN(agachamento)) {
-    var resultadoAgachamento = calcularAgachamento(idade, peso, agachamento, sexo);
-    html += `<p>Teste de Agachamento: ${resultadoAgachamento.percentual}% (${resultadoAgachamento.classificacao})</p>`;
-  }
 
   resultadosDiv.innerHTML = html;
 }
