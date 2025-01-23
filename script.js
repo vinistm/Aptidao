@@ -622,7 +622,7 @@ function gerarResultados() {
 
       logo.onload = function () {
         let yOffset = 0;
-        const totalPages = 3;
+        const totalPages = 4;
 
         for (let page = 0; page < totalPages; page++) {
           if (page > 0) {
@@ -634,7 +634,7 @@ function gerarResultados() {
             const logoHeight = (logo.height / logo.width) * logoWidth;
             pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
           }
-          const scaledContentHeight = (contentHeight - 110) / scale; 
+          const scaledContentHeight = (contentHeight - 120) / scale; 
           const pageCanvas = document.createElement("canvas");
           const context = pageCanvas.getContext("2d");
           pageCanvas.width = canvas.width;
