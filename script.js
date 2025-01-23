@@ -419,32 +419,36 @@ function calcularVO2Maximo(idade, distancia, sexo) {
   };
 }
 
-function calcularFlexibilidade(sexo, alcance) {
+function calcularFlexibilidade(idade, alcance, sexo) {
   var classificacao = "";
 
   if (sexo === "masculino") {
-    if (alcance < 20) {
-      classificacao = "Muito Ruim";
-    } else if (alcance >= 20 && alcance <= 29) {
-      classificacao = "Ruim";
-    } else if (alcance >= 30 && alcance <= 39) {
-      classificacao = "Médio";
-    } else if (alcance >= 40 && alcance <= 49) {
-      classificacao = "Bom";
-    } else if (alcance > 50) {
-      classificacao = "Excelente";
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorFaixa(alcance, 27, 17, 6, 0);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorFaixa(alcance, 25, 15, 5, -5);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorFaixa(alcance, 23, 13, 3, -7);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorFaixa(alcance, 20, 11, 1, -10);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorFaixa(alcance, 17, 8, -2, -12);
+    } else { // 71+
+      classificacao = classificarPorFaixa(alcance, 16, 7, -2, -11);
     }
   } else if (sexo === "feminino") {
-    if (alcance < 25) {
-      classificacao = "Muito Ruim";
-    } else if (alcance >= 25 && alcance <= 34) {
-      classificacao = "Ruim";
-    } else if (alcance >= 35 && alcance <= 44) {
-      classificacao = "Médio";
-    } else if (alcance >= 45 && alcance <= 54) {
-      classificacao = "Bom";
-    } else if (alcance > 55) {
-      classificacao = "Excelente";
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorFaixa(alcance, 30, 21, 11, 0);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorFaixa(alcance, 28, 19, 9, 0);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorFaixa(alcance, 26, 17, 7, -1);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorFaixa(alcance, 24, 14, 7, -1);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorFaixa(alcance, 21, 11, 4, -2);
+    } else { // 71+
+      classificacao = classificarPorFaixa(alcance, 20, 10, 3, -2);
     }
   }
   return classificacao;
