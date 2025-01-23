@@ -5,9 +5,8 @@ function calcularResultados(resultadosDiv) {
   var peso = parseFloat(document.getElementById("peso").value);
   var altura = parseFloat(document.getElementById("altura").value) / 100;
   var supino = parseFloat(document.getElementById("supino").value);
-  var saltoVertical = parseFloat(
-    document.getElementById("saltoVertical").value
-  );
+  var agachamento = parseFloat(document.getElementById("agachamento").value);
+  var saltoVertical = parseFloat(document.getElementById("saltoVertical").value);
   var equilibrioD = parseFloat(document.getElementById("equilibrioD").value);
   var equilibrioE = parseFloat(document.getElementById("equilibrioE").value);
   var distanciaVO2 = parseFloat(document.getElementById("distanciaVO2").value);
@@ -84,6 +83,11 @@ function calcularResultados(resultadosDiv) {
   if (!isNaN(caminhada6Minutos)) {
     var classificacaoCaminhada6Minutos = calcularCaminhada6Minutos(idade, caminhada6Minutos, sexo);
     html += `<p>Teste de Caminhada de 6 Minutos: ${caminhada6Minutos} metros (${classificacaoCaminhada6Minutos})</p>`;
+  }
+
+  if (!isNaN(agachamento)) {
+    var resultadoAgachamento = calcularAgachamento(idade, peso, agachamento, sexo);
+    html += `<p>Teste de Agachamento: ${resultadoAgachamento.percentual}% (${resultadoAgachamento.classificacao})</p>`;
   }
 
   resultadosDiv.innerHTML = html;
@@ -415,36 +419,32 @@ function calcularVO2Maximo(idade, distancia, sexo) {
   };
 }
 
-function calcularFlexibilidade(idade, alcance, sexo) {
+function calcularFlexibilidade(sexo, alcance) {
   var classificacao = "";
 
   if (sexo === "masculino") {
-    if (idade >= 18 && idade <= 30) {
-      classificacao = classificarPorFaixa(alcance, 27, 17, 6, 0);
-    } else if (idade >= 31 && idade <= 40) {
-      classificacao = classificarPorFaixa(alcance, 25, 15, 5, -5);
-    } else if (idade >= 41 && idade <= 50) {
-      classificacao = classificarPorFaixa(alcance, 23, 13, 3, -7);
-    } else if (idade >= 51 && idade <= 60) {
-      classificacao = classificarPorFaixa(alcance, 20, 11, 1, -10);
-    } else if (idade >= 61 && idade <= 70) {
-      classificacao = classificarPorFaixa(alcance, 17, 8, -2, -12);
-    } else { // 71+
-      classificacao = classificarPorFaixa(alcance, 16, 7, -2, -11);
+    if (alcance < 20) {
+      classificacao = "Muito Ruim";
+    } else if (alcance >= 20 && alcance <= 29) {
+      classificacao = "Ruim";
+    } else if (alcance >= 30 && alcance <= 39) {
+      classificacao = "Médio";
+    } else if (alcance >= 40 && alcance <= 49) {
+      classificacao = "Bom";
+    } else if (alcance > 50) {
+      classificacao = "Excelente";
     }
   } else if (sexo === "feminino") {
-    if (idade >= 18 && idade <= 30) {
-      classificacao = classificarPorFaixa(alcance, 30, 21, 11, 0);
-    } else if (idade >= 31 && idade <= 40) {
-      classificacao = classificarPorFaixa(alcance, 28, 19, 9, 0);
-    } else if (idade >= 41 && idade <= 50) {
-      classificacao = classificarPorFaixa(alcance, 26, 17, 7, -1);
-    } else if (idade >= 51 && idade <= 60) {
-      classificacao = classificarPorFaixa(alcance, 24, 14, 7, -1);
-    } else if (idade >= 61 && idade <= 70) {
-      classificacao = classificarPorFaixa(alcance, 21, 11, 4, -2);
-    } else { // 71+
-      classificacao = classificarPorFaixa(alcance, 20, 10, 3, -2);
+    if (alcance < 25) {
+      classificacao = "Muito Ruim";
+    } else if (alcance >= 25 && alcance <= 34) {
+      classificacao = "Ruim";
+    } else if (alcance >= 35 && alcance <= 44) {
+      classificacao = "Médio";
+    } else if (alcance >= 45 && alcance <= 54) {
+      classificacao = "Bom";
+    } else if (alcance > 55) {
+      classificacao = "Excelente";
     }
   }
   return classificacao;
@@ -560,7 +560,59 @@ function classificarTempo(valor, excelente, bom, medio, ruim) {
     return "Muito Ruim";
   }
 }
+function calcularAgachamento(idade, pesoCorporal, pesoAgachamento, sexo) {
+  var percentualAgachamento = (pesoAgachamento / pesoCorporal) * 100;
+  var classificacao = "";
 
+  if (sexo === "masculino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 200, 150, 120, 80);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 180, 135, 110, 70);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 160, 125, 100, 60);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 140, 115, 90, 50);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 130, 100, 75, 40);
+    } else { // 71+
+      classificacao = classificarPorcentagem(percentualAgachamento, 120, 90, 65, 35);
+    }
+  } else if (sexo === "feminino") {
+    if (idade >= 18 && idade <= 30) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 150, 100, 70, 40);
+    } else if (idade >= 31 && idade <= 40) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 130, 90, 60, 35);
+    } else if (idade >= 41 && idade <= 50) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 120, 80, 55, 30);
+    } else if (idade >= 51 && idade <= 60) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 100, 70, 45, 25);
+    } else if (idade >= 61 && idade <= 70) {
+      classificacao = classificarPorcentagem(percentualAgachamento, 90, 60, 40, 20);
+    } else { // 71+
+      classificacao = classificarPorcentagem(percentualAgachamento, 75, 50, 30, 15);
+    }
+  }
+
+  return {
+    percentual: percentualAgachamento.toFixed(2),
+    classificacao: classificacao,
+  };
+}
+
+function classificarPorcentagem(valor, excelente, bom, medio, ruim) {
+  if (valor > excelente) {
+    return "Excelente";
+  } else if (valor >= bom && valor <= excelente) {
+    return "Bom";
+  } else if (valor >= medio && valor < bom) {
+    return "Médio";
+  } else if (valor >= ruim && valor < medio) {
+    return "Ruim";
+  } else {
+    return "Muito Ruim";
+  }
+}
 function calcularCaminhada6Minutos(idade, distancia, sexo) {
   var classificacao = "";
 
@@ -626,7 +678,7 @@ function gerarResultados() {
 
       logo.onload = function () {
         let yOffset = 0;
-        const totalPages = 4;
+        const totalPages = 6;
 
         for (let page = 0; page < totalPages; page++) {
           if (page > 0) {
