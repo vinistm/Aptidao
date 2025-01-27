@@ -138,5 +138,21 @@ button {
     min-height: 100vh;
     background: url("./logo.jpeg") no-repeat center center;
     background-size: 130%;
+    font-size: 14px;
+  }
+  #formulario label {
+    font-size: 12px;
+  }
+
+  #formulario input {
+    font-size: 14px; 
+  }
+
+  #resultados {
+    font-size: 12px; 
+  }
+
+  button {
+    font-size: 14px; 
   }
 }
