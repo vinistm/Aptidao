@@ -420,7 +420,7 @@ function calcularVO2Maximo(idade, distancia, sexo) {
   };
 }
 
-function calcularFlexibilidade(idade, alcance, sexo) {
+function calcularFlexibilidade(idade,sexo,alcance) {
   var classificacao = "";
 
   if (sexo === "masculino") {
