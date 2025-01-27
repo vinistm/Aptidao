@@ -452,6 +452,7 @@ function calcularFlexibilidade(idade,sexo,alcance) {
       classificacao = classificarPorFaixa(alcance, 20, 10, 3, -2);
     }
   }
+   console.log(classificacao)
   return classificacao;
 }
 function calcularCinturaAbdominal(sexo, cintura) {
