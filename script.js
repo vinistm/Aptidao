@@ -278,29 +278,29 @@ function calcularSaltoVertical(idade, distancia, sexo) {
   if (sexo === "masculino") {
     if (idade >= 18 && idade <= 30) {
       classificacao = classificarPorFaixa(distancia, 70, 60, 50);
-    } else if (idade >= 31 && idade <= 49) {
+    } else if (idade >= 31 && idade <= 40) {
       classificacao = classificarPorFaixa(distancia, 60, 50, 40);
-    } else if (idade >= 50 && idade <= 59) {
+    } else if (idade >= 41 && idade <= 50) {
       classificacao = classificarPorFaixa(distancia, 50, 40, 30);
-    } else if (idade >= 60 && idade <= 69) {
+    } else if (idade >= 51 && idade <= 60) {
       classificacao = classificarPorFaixa(distancia, 40, 30, 20);
-    } else if (idade >= 70 && idade <= 79) {
+    } else if (idade >= 61 && idade <= 70) {
       classificacao = classificarPorFaixa(distancia, 30, 20, 10);
-    } else if (idade >= 80) {
+    } else if (idade >= 71) {
       classificacao = classificarPorFaixa(distancia, 20, 15, 10);
     }
   } else if (sexo === "feminino") {
     if (idade >= 18 && idade <= 30) {
       classificacao = classificarPorFaixa(distancia, 60, 50, 40);
-    } else if (idade >= 31 && idade <= 49) {
+    } else if (idade >= 31 && idade <= 40) {
       classificacao = classificarPorFaixa(distancia, 50, 40, 30);
-    } else if (idade >= 50 && idade <= 59) {
+    } else if (idade >= 41 && idade <= 50) {
       classificacao = classificarPorFaixa(distancia, 40, 30, 20);
-    } else if (idade >= 60 && idade <= 69) {
+    } else if (idade >= 51 && idade <= 60) {
       classificacao = classificarPorFaixa(distancia, 30, 20, 10);
-    } else if (idade >= 70 && idade <= 79) {
+    } else if (idade >= 61 && idade <= 70) {
       classificacao = classificarPorFaixa(distancia, 20, 15, 10);
-    } else if (idade >= 80) {
+    } else if (idade >= 71) {
       classificacao = classificarPorFaixa(distancia, 15, 10, 5);
     }
   }
