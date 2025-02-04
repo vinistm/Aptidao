@@ -784,8 +784,8 @@ function gerarResultados() {
     const pageHeight = pdf.internal.pageSize.getHeight();
     const contentHeight = pageHeight - margin * 2;
 
-    // Ajuste de escala para mobile
-    const scale = isMobile ? 0.8 : 1;
+    // Ajuste de escala para mobile (reduzindo um pouco mais)
+    const scale = isMobile ? 0.75 : 1;
 
     html2canvas(document.getElementById("resultados"), {
       scale: scale,
@@ -793,9 +793,9 @@ function gerarResultados() {
       let imgWidth = pageWidth - margin * 2;
       let imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      // Se a altura da imagem for maior que a página, reduzimos a escala
-      if (imgHeight > pageHeight - margin * 2) {
-        const ratio = (pageHeight - margin * 2) / imgHeight;
+      // Se a altura da imagem for maior que a página, reduzimos mais a escala
+      if (imgHeight > contentHeight) {
+        const ratio = contentHeight / imgHeight;
         imgWidth *= ratio;
         imgHeight *= ratio;
       }
@@ -805,13 +805,18 @@ function gerarResultados() {
 
       logo.onload = function () {
         pdf.addImage(logo, "JPEG", margin, margin, 40, 20); // Logo no topo esquerdo
+
+        // Ajustando o espaço para evitar cortes
+        const yPosition = 40; // Começa um pouco abaixo do logo
+        const paddingBottom = isMobile ? 10 : 5; // Adiciona um pequeno espaço extra na parte inferior
+
         pdf.addImage(
           canvas.toDataURL("image/png"),
           "PNG",
           margin,
-          40,
+          yPosition,
           imgWidth,
-          imgHeight
+          imgHeight - paddingBottom
         );
 
         pdf.save("resultados.pdf");
