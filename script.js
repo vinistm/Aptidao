@@ -776,68 +776,43 @@ function gerarResultados() {
   document.getElementById("baixarPDF").addEventListener("click", function () {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
+
+    // Detectar se é mobile
+    const isMobile = window.innerWidth <= 768;
     const margin = 10;
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
     const contentHeight = pageHeight - margin * 2;
 
-    html2canvas(document.getElementById("resultados")).then(function (canvas) {
-      const totalHeight = canvas.height;
-      const imgWidth = pageWidth - margin * 2;
-      const scale = imgWidth / canvas.width;
-      const imgHeight = canvas.height * scale;
-      const scaledContentHeight = contentHeight / scale;
-      const totalPages = Math.ceil(totalHeight / scaledContentHeight);
+    // Ajuste de escala para mobile
+    const scale = isMobile ? 0.8 : 1;
+
+    html2canvas(document.getElementById("resultados"), {
+      scale: scale,
+    }).then(function (canvas) {
+      let imgWidth = pageWidth - margin * 2;
+      let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // Se a altura da imagem for maior que a página, reduzimos a escala
+      if (imgHeight > pageHeight - margin * 2) {
+        const ratio = (pageHeight - margin * 2) / imgHeight;
+        imgWidth *= ratio;
+        imgHeight *= ratio;
+      }
 
       const logo = new Image();
       logo.src = "logo.jpeg";
 
       logo.onload = function () {
-        let yOffset = 0;
-        const totalPages = 6;
-
-        for (let page = 0; page < totalPages; page++) {
-          if (page > 0) {
-            pdf.addPage();
-          }
-
-          if (page === 0) {
-            const logoWidth = 25;
-            const logoHeight = (logo.height / logo.width) * logoWidth;
-            pdf.addImage(logo, "JPEG", margin, margin, logoWidth, logoHeight);
-          }
-          const scaledContentHeight = (contentHeight - 60) / scale;
-          const pageCanvas = document.createElement("canvas");
-          const context = pageCanvas.getContext("2d");
-          pageCanvas.width = canvas.width;
-          pageCanvas.height = scaledContentHeight;
-
-          context.drawImage(
-            canvas,
-            0,
-            yOffset,
-            canvas.width,
-            pageCanvas.height,
-            0,
-            0,
-            canvas.width,
-            pageCanvas.height
-          );
-
-          const imgData = pageCanvas.toDataURL("image/png");
-
-          const yPosition = page === 0 ? margin * 3 : margin * 2;
-          pdf.text("", margin, margin * 2);
-          pdf.addImage(
-            imgData,
-            "PNG",
-            margin,
-            yPosition,
-            imgWidth,
-            contentHeight
-          );
-          yOffset += scaledContentHeight;
-        }
+        pdf.addImage(logo, "JPEG", margin, margin, 40, 20); // Logo no topo esquerdo
+        pdf.addImage(
+          canvas.toDataURL("image/png"),
+          "PNG",
+          margin,
+          40,
+          imgWidth,
+          imgHeight
+        );
 
         pdf.save("resultados.pdf");
       };
